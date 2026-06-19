@@ -16,7 +16,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; background: #fff; }
+body { margin: 0; min-width: 0; background: #fff; }
 button, input, select { font: inherit; }
 button, summary, input, select { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; }
