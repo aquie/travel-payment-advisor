@@ -1,62 +1,6 @@
 import type { FormEvent } from 'react';
 import type { MileValue, QuoteInput } from '../domain/types';
-
-export type QuoteDraft = {
-  quoteDate: string;
-  purchaseAmountJpy: string;
-  commonKrwPer100Jpy: string;
-  usdKrw: string;
-  naverKrwPer100Jpy: string;
-  shinhanKrwPer100Jpy: string;
-  naverEventApplied: boolean;
-  naverCashbackRemainingKrw: string;
-  shinhanPreviousMonthEligible: boolean;
-  shinhanOverseasSpendThisMonthKrw: string;
-  asianaMileValueKrw: MileValue;
-  rateUpdatedAt?: string;
-};
-
-function localDate(): string {
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60_000;
-  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
-}
-
-export function createDefaultDraft(): QuoteDraft {
-  return {
-    quoteDate: localDate(),
-    purchaseAmountJpy: '',
-    commonKrwPer100Jpy: '',
-    usdKrw: '',
-    naverKrwPer100Jpy: '',
-    shinhanKrwPer100Jpy: '',
-    naverEventApplied: false,
-    naverCashbackRemainingKrw: '5000',
-    shinhanPreviousMonthEligible: false,
-    shinhanOverseasSpendThisMonthKrw: '0',
-    asianaMileValueKrw: 15,
-  };
-}
-
-function optionalNumber(value: string): number | undefined {
-  return value.trim() === '' ? undefined : Number(value);
-}
-
-export function draftToInput(draft: QuoteDraft): QuoteInput {
-  return {
-    quoteDate: draft.quoteDate,
-    purchaseAmountJpy: Number(draft.purchaseAmountJpy),
-    commonKrwPer100Jpy: Number(draft.commonKrwPer100Jpy),
-    usdKrw: Number(draft.usdKrw),
-    naverKrwPer100Jpy: optionalNumber(draft.naverKrwPer100Jpy),
-    shinhanKrwPer100Jpy: optionalNumber(draft.shinhanKrwPer100Jpy),
-    naverEventApplied: draft.naverEventApplied,
-    naverCashbackRemainingKrw: Number(draft.naverCashbackRemainingKrw),
-    shinhanPreviousMonthEligible: draft.shinhanPreviousMonthEligible,
-    shinhanOverseasSpendThisMonthKrw: Number(draft.shinhanOverseasSpendThisMonthKrw),
-    asianaMileValueKrw: draft.asianaMileValueKrw,
-  };
-}
+import { draftToInput, isRateStale, type QuoteDraft } from '../state/quoteDraft';
 
 type QuoteFormProps = {
   draft: QuoteDraft;
@@ -66,6 +10,7 @@ type QuoteFormProps = {
 };
 
 export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormProps) {
+  const staleRate = isRateStale(draft.rateUpdatedAt);
   const update = <K extends keyof QuoteDraft>(key: K, value: QuoteDraft[K]) => {
     onDraftChange({ ...draft, [key]: value });
   };
@@ -129,6 +74,12 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
             <span>원</span>
           </div>
           <small id="rate-help">환율 API 없이 확인한 값을 직접 입력해요.</small>
+          {draft.rateUpdatedAt ? (
+            <small className={staleRate ? 'stale-rate' : undefined} role={staleRate ? 'status' : undefined}>
+              마지막 환율 입력 {new Date(draft.rateUpdatedAt).toLocaleString('ko-KR')}
+              {staleRate ? ' · 24시간이 지난 환율입니다.' : ''}
+            </small>
+          ) : null}
         </div>
       </div>
 

@@ -2,23 +2,48 @@ import { useState } from 'react';
 import { comparePaymentMethods } from './domain/engine';
 import type { ComparisonResult, QuoteInput } from './domain/types';
 import { OfficialSources } from './components/OfficialSources';
-import { createDefaultDraft, QuoteForm, type QuoteDraft } from './components/QuoteForm';
+import { DataManagement } from './components/DataManagement';
+import { QuoteForm } from './components/QuoteForm';
 import { Recommendation } from './components/Recommendation';
+import { createDefaultDraft, type QuoteDraft } from './state/quoteDraft';
+import {
+  loadStoredState,
+  resetStoredData,
+  saveComparison,
+  saveDraft,
+  type StoredDocument,
+} from './storage/localStore';
 
 export default function App() {
-  const [draft, setDraft] = useState<QuoteDraft>(createDefaultDraft);
+  const [initialLoad] = useState(loadStoredState);
+  const [draft, setDraft] = useState<QuoteDraft>(initialLoad.document.lastDraft);
+  const [storedDocument, setStoredDocument] = useState<StoredDocument>(initialLoad.document);
   const [result, setResult] = useState<ComparisonResult>();
   const [error, setError] = useState<string>();
+
+  const updateDraft = (nextDraft: QuoteDraft) => {
+    setDraft(nextDraft);
+    setStoredDocument(saveDraft(nextDraft));
+  };
 
   const compare = (input: QuoteInput) => {
     try {
       const nextResult = comparePaymentMethods(input);
       setResult(nextResult);
+      setStoredDocument(saveComparison(draft, nextResult));
       setError(undefined);
       requestAnimationFrame(() => document.getElementById('result-heading')?.focus({ preventScroll: true }));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '입력값을 다시 확인해 주세요.');
     }
+  };
+
+  const reset = () => {
+    const empty = resetStoredData();
+    setDraft(createDefaultDraft());
+    setStoredDocument(empty);
+    setResult(undefined);
+    setError(undefined);
   };
 
   return (
@@ -33,11 +58,14 @@ export default function App() {
           <p>일본 결제비용을 한눈에 비교해요</p>
           <span>환율과 비교 기록은 이 기기에만 저장됩니다.</span>
         </section>
+        {initialLoad.recoveredFromError ? (
+          <p className="recovery-notice" role="status">저장 데이터를 읽지 못해 안전한 기본값으로 초기화했습니다.</p>
+        ) : null}
 
         <div className="workspace">
           <section className="input-section" aria-labelledby="input-heading">
             <h2 id="input-heading" className="sr-only">결제 정보 입력</h2>
-            <QuoteForm draft={draft} error={error} onDraftChange={setDraft} onCompare={compare} />
+            <QuoteForm draft={draft} error={error} onDraftChange={updateDraft} onCompare={compare} />
           </section>
           {result ? <Recommendation result={result} /> : (
             <section className="empty-result" aria-label="비교 안내">
@@ -48,6 +76,7 @@ export default function App() {
           )}
         </div>
 
+        <DataManagement document={storedDocument} onReset={reset} />
         <OfficialSources />
         <aside className="disclaimer">
           이 결과는 의사결정용 예상치이며 실제 승인·매입 환율과 청구액을 보장하지 않습니다.

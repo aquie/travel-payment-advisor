@@ -1,8 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 
 describe('payment comparison UI', () => {
+  beforeEach(() => localStorage.clear());
+
   it('shows an accessible validation error for missing manual rates', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: '비교하기' }));
