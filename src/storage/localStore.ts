@@ -1,4 +1,6 @@
 import type { ComparisonResult } from '../domain/types';
+import { validateQuoteInput } from '../domain/engine';
+import { METHOD_ORDER } from '../domain/rules';
 import { createDefaultDraft, type QuoteDraft } from '../state/quoteDraft';
 
 export const STORAGE_KEY = 'travel-payment-advisor:v1';
@@ -42,17 +44,66 @@ function isStoredDocument(value: unknown): value is StoredDocument {
   if (!value || typeof value !== 'object') return false;
   const candidate = value as Partial<StoredDocument>;
   return candidate.schemaVersion === SCHEMA_VERSION &&
-    Boolean(candidate.lastDraft && typeof candidate.lastDraft === 'object') &&
-    Array.isArray(candidate.recentComparisons);
+    isQuoteDraft(candidate.lastDraft) &&
+    Array.isArray(candidate.recentComparisons) &&
+    candidate.recentComparisons.every(isComparisonResult);
+}
+
+function isQuoteDraft(value: unknown): value is QuoteDraft {
+  if (!value || typeof value !== 'object') return false;
+  const draft = value as Record<string, unknown>;
+  const stringFields = [
+    'quoteDate', 'purchaseAmountJpy', 'commonKrwPer100Jpy', 'usdKrw',
+    'naverKrwPer100Jpy', 'shinhanKrwPer100Jpy', 'naverCashbackRemainingKrw',
+    'shinhanOverseasSpendThisMonthKrw',
+  ];
+  return stringFields.every((field) => typeof draft[field] === 'string') &&
+    typeof draft.naverEventApplied === 'boolean' &&
+    typeof draft.shinhanPreviousMonthEligible === 'boolean' &&
+    [10, 15, 20].includes(draft.asianaMileValueKrw as number) &&
+    (draft.rateUpdatedAt === undefined || typeof draft.rateUpdatedAt === 'string');
+}
+
+function isComparisonResult(value: unknown): value is ComparisonResult {
+  if (!value || typeof value !== 'object') return false;
+  const comparison = value as Partial<ComparisonResult>;
+  if (typeof comparison.calculatedAt !== 'string' || !Number.isFinite(Date.parse(comparison.calculatedAt)) ||
+    !comparison.input || !Array.isArray(comparison.rankedMethods) ||
+    comparison.rankedMethods.length !== METHOD_ORDER.length ||
+    typeof comparison.isCloseCall !== 'boolean') return false;
+  try {
+    validateQuoteInput(comparison.input);
+  } catch {
+    return false;
+  }
+  const seen = new Set<string>();
+  return comparison.rankedMethods.every((method) => {
+    if (!method || !METHOD_ORDER.includes(method.methodId) || seen.has(method.methodId)) return false;
+    seen.add(method.methodId);
+    return ['convertedKrw', 'percentageFeesKrw', 'fixedFeesKrw', 'cashbackKrw',
+      'earnedMiles', 'mileageValueKrw', 'effectiveCostKrw']
+      .every((field) => Number.isFinite(method[field as keyof typeof method])) &&
+      Array.isArray(method.assumptions) && method.assumptions.every((item) => typeof item === 'string') &&
+      Array.isArray(method.warnings) && method.warnings.every((item) => typeof item === 'string');
+  });
 }
 
 function write(document: StoredDocument): StoredDocument {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(document));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(document));
+  } catch {
+    // Storage can be unavailable in private or quota-constrained contexts.
+  }
   return document;
 }
 
 export function loadStoredState(now = Date.now()): LoadResult {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  let raw: string | null;
+  try {
+    raw = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return { document: createEmptyDocument(), recoveredFromError: true };
+  }
   if (!raw) return { document: createEmptyDocument(), recoveredFromError: false };
 
   try {
@@ -87,7 +138,11 @@ export function saveComparison(
 }
 
 export function resetStoredData(): StoredDocument {
-  localStorage.removeItem(STORAGE_KEY);
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // Keep the in-memory reset usable even when browser storage is blocked.
+  }
   return createEmptyDocument();
 }
 

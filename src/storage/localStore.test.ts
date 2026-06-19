@@ -58,4 +58,21 @@ describe('versioned local storage', () => {
       expect(loaded.document.schemaVersion).toBe(SCHEMA_VERSION);
     },
   );
+
+  it.each([
+    JSON.stringify({ schemaVersion: 1, lastDraft: {}, recentComparisons: [] }),
+    JSON.stringify({
+      schemaVersion: 1,
+      lastDraft: completeDraft,
+      recentComparisons: [{ calculatedAt: new Date().toISOString(), rankedMethods: [] }],
+    }),
+  ])('recovers from malformed nested data: %s', (raw) => {
+    localStorage.setItem(STORAGE_KEY, raw);
+    const loaded = loadStoredState();
+    expect(loaded.recoveredFromError).toBe(true);
+    expect(loaded.document).toEqual(expect.objectContaining({
+      schemaVersion: SCHEMA_VERSION,
+      recentComparisons: [],
+    }));
+  });
 });
