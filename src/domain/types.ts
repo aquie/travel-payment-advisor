@@ -6,6 +6,13 @@ export type MethodId =
 
 export type MileValue = 10 | 15 | 20;
 
+export type RateTimestamps = {
+  commonKrwPer100Jpy?: string;
+  usdKrw?: string;
+  naverKrwPer100Jpy?: string;
+  shinhanKrwPer100Jpy?: string;
+};
+
 export type QuoteInput = {
   quoteDate: string;
   purchaseAmountJpy: number;
@@ -18,6 +25,7 @@ export type QuoteInput = {
   shinhanPreviousMonthEligible: boolean;
   shinhanOverseasSpendThisMonthKrw: number;
   asianaMileValueKrw: MileValue;
+  rateTimestamps?: RateTimestamps;
 };
 
 export type MethodBreakdown = {

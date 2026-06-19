@@ -48,6 +48,8 @@ function MethodRow({ method, rank }: { method: MethodBreakdown; rank: number }) 
 export function Recommendation({ result }: { result: ComparisonResult }) {
   const [winner, runnerUp] = result.rankedMethods;
   const difference = runnerUp.effectiveCostKrw - winner.effectiveCostKrw;
+  const rateTimes = result.input.rateTimestamps;
+  const usedRateTimes = rateTimes ? Object.entries(rateTimes).filter(([, value]) => value) : [];
 
   return (
     <section className="result-section" aria-live="polite" aria-labelledby="result-heading">
@@ -74,6 +76,13 @@ export function Recommendation({ result }: { result: ComparisonResult }) {
         ))}
       </div>
       <p className="calculated-at">계산 시각 {new Date(result.calculatedAt).toLocaleString('ko-KR')}</p>
+      {usedRateTimes.length > 0 ? (
+        <p className="calculated-at">
+          환율 확인 시각 {usedRateTimes.map(([key, value]) =>
+            `${key === 'commonKrwPer100Jpy' ? '공통 JPY' : key === 'usdKrw' ? 'USD' : key === 'naverKrwPer100Jpy' ? 'Naver' : '신한'} ${new Date(value as string).toLocaleString('ko-KR')}`
+          ).join(' · ')}
+        </p>
+      ) : null}
     </section>
   );
 }

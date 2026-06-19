@@ -61,7 +61,8 @@ function isQuoteDraft(value: unknown): value is QuoteDraft {
     typeof draft.naverEventApplied === 'boolean' &&
     typeof draft.shinhanPreviousMonthEligible === 'boolean' &&
     [10, 15, 20].includes(draft.asianaMileValueKrw as number) &&
-    (draft.rateUpdatedAt === undefined || typeof draft.rateUpdatedAt === 'string');
+    ['rateUpdatedAt', 'usdRateUpdatedAt', 'naverRateUpdatedAt', 'shinhanRateUpdatedAt']
+      .every((field) => draft[field] === undefined || typeof draft[field] === 'string');
 }
 
 function isComparisonResult(value: unknown): value is ComparisonResult {

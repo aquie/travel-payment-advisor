@@ -13,6 +13,9 @@ export type QuoteDraft = {
   shinhanOverseasSpendThisMonthKrw: string;
   asianaMileValueKrw: MileValue;
   rateUpdatedAt?: string;
+  usdRateUpdatedAt?: string;
+  naverRateUpdatedAt?: string;
+  shinhanRateUpdatedAt?: string;
 };
 
 function localDate(): string {
@@ -54,6 +57,12 @@ export function draftToInput(draft: QuoteDraft): QuoteInput {
     shinhanPreviousMonthEligible: draft.shinhanPreviousMonthEligible,
     shinhanOverseasSpendThisMonthKrw: Number(draft.shinhanOverseasSpendThisMonthKrw),
     asianaMileValueKrw: draft.asianaMileValueKrw,
+    rateTimestamps: {
+      commonKrwPer100Jpy: draft.rateUpdatedAt,
+      usdKrw: draft.usdRateUpdatedAt,
+      naverKrwPer100Jpy: draft.naverRateUpdatedAt,
+      shinhanKrwPer100Jpy: draft.shinhanRateUpdatedAt,
+    },
   };
 }
 

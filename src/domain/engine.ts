@@ -35,6 +35,11 @@ export function validateQuoteInput(input: QuoteInput): void {
   if (!MILE_VALUES.has(input.asianaMileValueKrw)) {
     throw new RangeError('마일 가치는 10원, 15원, 20원 중 하나여야 합니다.');
   }
+  if (input.rateTimestamps && Object.values(input.rateTimestamps).some(
+    (timestamp) => timestamp !== undefined && !Number.isFinite(Date.parse(timestamp)),
+  )) {
+    throw new RangeError('환율 확인 시각이 올바르지 않습니다.');
+  }
 }
 
 function converted(amountJpy: number, ratePer100Jpy: number): number {

@@ -15,8 +15,12 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
     onDraftChange((current) => ({ ...current, [key]: value }));
   };
 
-  const updateRate = (key: 'commonKrwPer100Jpy' | 'usdKrw', value: string) => {
-    onDraftChange((current) => ({ ...current, [key]: value, rateUpdatedAt: new Date().toISOString() }));
+  const updateRate = (
+    key: 'commonKrwPer100Jpy' | 'usdKrw' | 'naverKrwPer100Jpy' | 'shinhanKrwPer100Jpy',
+    timestampKey: 'rateUpdatedAt' | 'usdRateUpdatedAt' | 'naverRateUpdatedAt' | 'shinhanRateUpdatedAt',
+    value: string,
+  ) => {
+    onDraftChange((current) => ({ ...current, [key]: value, [timestampKey]: new Date().toISOString() }));
   };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -67,7 +71,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
               step="0.01"
               placeholder="직접 입력"
               value={draft.commonKrwPer100Jpy}
-              onChange={(event) => updateRate('commonKrwPer100Jpy', event.target.value)}
+              onChange={(event) => updateRate('commonKrwPer100Jpy', 'rateUpdatedAt', event.target.value)}
               required
               aria-describedby="rate-help"
             />
@@ -96,7 +100,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
               step="0.01"
               placeholder="Toss 고정 수수료 환산용"
               value={draft.usdKrw}
-              onChange={(event) => updateRate('usdKrw', event.target.value)}
+              onChange={(event) => updateRate('usdKrw', 'usdRateUpdatedAt', event.target.value)}
               required
             />
           </div>
@@ -111,7 +115,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
                 step="0.01"
                 placeholder="미입력 시 공통 환율"
                 value={draft.naverKrwPer100Jpy}
-                onChange={(event) => update('naverKrwPer100Jpy', event.target.value)}
+                onChange={(event) => updateRate('naverKrwPer100Jpy', 'naverRateUpdatedAt', event.target.value)}
               />
             </div>
             <div className="field">
@@ -124,7 +128,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
                 step="0.01"
                 placeholder="미입력 시 공통 환율"
                 value={draft.shinhanKrwPer100Jpy}
-                onChange={(event) => update('shinhanKrwPer100Jpy', event.target.value)}
+                onChange={(event) => updateRate('shinhanKrwPer100Jpy', 'shinhanRateUpdatedAt', event.target.value)}
               />
             </div>
           </div>

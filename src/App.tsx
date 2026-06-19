@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { comparePaymentMethods } from './domain/engine';
 import type { ComparisonResult, QuoteInput } from './domain/types';
 import { OfficialSources } from './components/OfficialSources';
@@ -22,12 +22,14 @@ export default function App() {
   const [error, setError] = useState<string>();
 
   const updateDraft = (update: (current: QuoteDraft) => QuoteDraft) => {
-    setDraft((current) => {
-      const nextDraft = update(current);
-      setStoredDocument(saveDraft(nextDraft));
-      return nextDraft;
-    });
+    setDraft(update);
+    setResult(undefined);
+    setError(undefined);
   };
+
+  useEffect(() => {
+    setStoredDocument(saveDraft(draft));
+  }, [draft]);
 
   const compare = (input: QuoteInput) => {
     try {

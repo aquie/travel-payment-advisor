@@ -27,6 +27,19 @@ describe('payment comparison UI', () => {
     expect(screen.getAllByText('89,800원').length).toBeGreaterThan(0);
   });
 
+  it('invalidates a displayed recommendation when an input changes', () => {
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('결제 예정일'), { target: { value: '2026-07-01' } });
+    fireEvent.change(screen.getByLabelText('결제 금액'), { target: { value: '10000' } });
+    fireEvent.change(screen.getByLabelText('공통 환율'), { target: { value: '900' } });
+    fireEvent.change(screen.getByLabelText('USD/KRW 환율'), { target: { value: '1400' } });
+    fireEvent.click(screen.getByRole('button', { name: '비교하기' }));
+    expect(screen.getByRole('heading', { name: '결제 방법 비교' })).toBeTruthy();
+
+    fireEvent.change(screen.getByLabelText('결제 금액'), { target: { value: '100000' } });
+    expect(screen.queryByRole('heading', { name: '결제 방법 비교' })).toBeNull();
+  });
+
   it('clears saved history only after the explicit second reset action', () => {
     render(<App />);
     fireEvent.change(screen.getByLabelText('결제 예정일'), { target: { value: '2026-07-01' } });
