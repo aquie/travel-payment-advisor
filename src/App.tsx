@@ -21,9 +21,12 @@ export default function App() {
   const [result, setResult] = useState<ComparisonResult>();
   const [error, setError] = useState<string>();
 
-  const updateDraft = (nextDraft: QuoteDraft) => {
-    setDraft(nextDraft);
-    setStoredDocument(saveDraft(nextDraft));
+  const updateDraft = (update: (current: QuoteDraft) => QuoteDraft) => {
+    setDraft((current) => {
+      const nextDraft = update(current);
+      setStoredDocument(saveDraft(nextDraft));
+      return nextDraft;
+    });
   };
 
   const compare = (input: QuoteInput) => {

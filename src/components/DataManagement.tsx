@@ -42,7 +42,16 @@ export function DataManagement({ document, onReset }: DataManagementProps) {
           <div className="reset-confirm" role="alert">
             <span>입력과 최근 비교를 모두 지울까요?</span>
             <button type="button" onClick={() => setConfirmingReset(false)}>취소</button>
-            <button className="danger-button" type="button" onClick={onReset}>모두 지우기</button>
+            <button
+              className="danger-button"
+              type="button"
+              onClick={() => {
+                setConfirmingReset(false);
+                onReset();
+              }}
+            >
+              모두 지우기
+            </button>
           </div>
         )}
       </div>

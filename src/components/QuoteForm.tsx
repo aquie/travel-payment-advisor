@@ -5,18 +5,18 @@ import { draftToInput, isRateStale, type QuoteDraft } from '../state/quoteDraft'
 type QuoteFormProps = {
   draft: QuoteDraft;
   error?: string;
-  onDraftChange: (draft: QuoteDraft) => void;
+  onDraftChange: (update: (current: QuoteDraft) => QuoteDraft) => void;
   onCompare: (input: QuoteInput) => void;
 };
 
 export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormProps) {
   const staleRate = isRateStale(draft.rateUpdatedAt);
   const update = <K extends keyof QuoteDraft>(key: K, value: QuoteDraft[K]) => {
-    onDraftChange({ ...draft, [key]: value });
+    onDraftChange((current) => ({ ...current, [key]: value }));
   };
 
   const updateRate = (key: 'commonKrwPer100Jpy' | 'usdKrw', value: string) => {
-    onDraftChange({ ...draft, [key]: value, rateUpdatedAt: new Date().toISOString() });
+    onDraftChange((current) => ({ ...current, [key]: value, rateUpdatedAt: new Date().toISOString() }));
   };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {

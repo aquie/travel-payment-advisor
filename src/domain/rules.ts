@@ -82,7 +82,7 @@ export const PAYMENT_RULES = {
       label: '해외 기본 1.5 + 추가 1.5마일',
       methodId: 'shinhan-air-1.5',
       sourceUrl:
-        'https://www.shinhancard.com/conts/person/card_info/dream/credit/travel/1366616_46600.jsp',
+        'https://www.shinhancard.com/pconts/html/card/apply/credit/1188278_2207.html',
       lastVerifiedAt: '2026-06-19',
     },
     fees: {
@@ -90,7 +90,7 @@ export const PAYMENT_RULES = {
       label: 'Mastercard 1% + 신한 해외서비스 0.18%',
       methodId: 'shinhan-air-1.5',
       sourceUrl:
-        'https://www.shinhancard.com/pconts/html/helpdesk/totalService/MOBFM12552/MOBFM12552H/MOBFM12552R10.html',
+        'https://www.shinhancard.com/pconts/html/helpdesk/totalService/MOBFM12552/MOBFM12552A/MOBFM12552R05.html',
       lastVerifiedAt: '2026-06-19',
     },
   },
