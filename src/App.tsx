@@ -37,7 +37,7 @@ export default function App() {
       setResult(nextResult);
       setStoredDocument(saveComparison(draft, nextResult));
       setError(undefined);
-      requestAnimationFrame(() => document.getElementById('result-heading')?.focus({ preventScroll: true }));
+      requestAnimationFrame(() => document.getElementById('result-heading')?.focus());
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '입력값을 다시 확인해 주세요.');
     }

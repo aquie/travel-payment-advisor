@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { METHOD_NAMES } from '../domain/rules';
 import type { ComparisonResult } from '../domain/types';
 import { createExportJson, type StoredDocument } from '../storage/localStore';
@@ -12,6 +12,19 @@ type DataManagementProps = {
 
 export function DataManagement({ document, onReset }: DataManagementProps) {
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const resetTriggerRef = useRef<HTMLButtonElement>(null);
+  const cancelResetRef = useRef<HTMLButtonElement>(null);
+  const hadConfirmation = useRef(false);
+
+  useEffect(() => {
+    if (confirmingReset) {
+      hadConfirmation.current = true;
+      cancelResetRef.current?.focus();
+    } else if (hadConfirmation.current) {
+      hadConfirmation.current = false;
+      resetTriggerRef.current?.focus();
+    }
+  }, [confirmingReset]);
 
   const exportData = () => {
     const blob = new Blob([createExportJson(document)], { type: 'application/json' });
@@ -37,11 +50,11 @@ export function DataManagement({ document, onReset }: DataManagementProps) {
       <div className="data-actions">
         <button type="button" onClick={exportData}>JSON 내보내기</button>
         {!confirmingReset ? (
-          <button className="danger-button" type="button" onClick={() => setConfirmingReset(true)}>전체 초기화</button>
+          <button ref={resetTriggerRef} className="danger-button" type="button" onClick={() => setConfirmingReset(true)}>전체 초기화</button>
         ) : (
           <div className="reset-confirm" role="alert">
             <span>입력과 최근 비교를 모두 지울까요?</span>
-            <button type="button" onClick={() => setConfirmingReset(false)}>취소</button>
+            <button ref={cancelResetRef} type="button" onClick={() => setConfirmingReset(false)}>취소</button>
             <button
               className="danger-button"
               type="button"

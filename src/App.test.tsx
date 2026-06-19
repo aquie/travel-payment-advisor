@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 
@@ -52,5 +52,17 @@ describe('payment comparison UI', () => {
     fireEvent.click(screen.getByRole('button', { name: '모두 지우기' }));
     expect(screen.getByText('아직 저장된 비교가 없습니다.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: '모두 지우기' })).toBeNull();
+  });
+
+  it('moves focus into and back out of reset confirmation', async () => {
+    render(<App />);
+    const resetButton = screen.getByRole('button', { name: '전체 초기화' });
+    fireEvent.click(resetButton);
+    const cancelButton = screen.getByRole('button', { name: '취소' });
+    await waitFor(() => expect(document.activeElement).toBe(cancelButton));
+    fireEvent.click(cancelButton);
+    await waitFor(() => expect(document.activeElement).toBe(
+      screen.getByRole('button', { name: '전체 초기화' }),
+    ));
   });
 });
