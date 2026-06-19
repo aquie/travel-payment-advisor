@@ -10,7 +10,6 @@ type QuoteFormProps = {
 };
 
 export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormProps) {
-  const staleRate = isRateStale(draft.rateUpdatedAt);
   const update = <K extends keyof QuoteDraft>(key: K, value: QuoteDraft[K]) => {
     onDraftChange((current) => ({ ...current, [key]: value }));
   };
@@ -20,7 +19,11 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
     timestampKey: 'rateUpdatedAt' | 'usdRateUpdatedAt' | 'naverRateUpdatedAt' | 'shinhanRateUpdatedAt',
     value: string,
   ) => {
-    onDraftChange((current) => ({ ...current, [key]: value, [timestampKey]: new Date().toISOString() }));
+    onDraftChange((current) => ({
+      ...current,
+      [key]: value,
+      [timestampKey]: value.trim() === '' ? undefined : new Date().toISOString(),
+    }));
   };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -78,12 +81,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
             <span>원</span>
           </div>
           <small id="rate-help">환율 API 없이 확인한 값을 직접 입력해요.</small>
-          {draft.rateUpdatedAt ? (
-            <small className={staleRate ? 'stale-rate' : undefined} role={staleRate ? 'status' : undefined}>
-              마지막 환율 입력 {new Date(draft.rateUpdatedAt).toLocaleString('ko-KR')}
-              {staleRate ? ' · 24시간이 지난 환율입니다.' : ''}
-            </small>
-          ) : null}
+          <RateTimestamp label="공통 JPY" timestamp={draft.rateUpdatedAt} />
         </div>
       </div>
 
@@ -103,6 +101,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
               onChange={(event) => updateRate('usdKrw', 'usdRateUpdatedAt', event.target.value)}
               required
             />
+            <RateTimestamp label="USD" timestamp={draft.usdRateUpdatedAt} />
           </div>
           <div className="rate-overrides">
             <div className="field">
@@ -117,6 +116,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
                 value={draft.naverKrwPer100Jpy}
                 onChange={(event) => updateRate('naverKrwPer100Jpy', 'naverRateUpdatedAt', event.target.value)}
               />
+              <RateTimestamp label="Naver Pay" timestamp={draft.naverKrwPer100Jpy ? draft.naverRateUpdatedAt : undefined} />
             </div>
             <div className="field">
               <label htmlFor="shinhan-rate">신한카드 전용 환율 <em>선택</em></label>
@@ -130,6 +130,7 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
                 value={draft.shinhanKrwPer100Jpy}
                 onChange={(event) => updateRate('shinhanKrwPer100Jpy', 'shinhanRateUpdatedAt', event.target.value)}
               />
+              <RateTimestamp label="신한카드" timestamp={draft.shinhanKrwPer100Jpy ? draft.shinhanRateUpdatedAt : undefined} />
             </div>
           </div>
 
@@ -216,5 +217,16 @@ export function QuoteForm({ draft, error, onDraftChange, onCompare }: QuoteFormP
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <button className="primary-action" type="submit">비교하기</button>
     </form>
+  );
+}
+
+function RateTimestamp({ label, timestamp }: { label: string; timestamp?: string }) {
+  if (!timestamp) return null;
+  const stale = isRateStale(timestamp);
+  return (
+    <small className={stale ? 'stale-rate' : undefined} role={stale ? 'status' : undefined}>
+      {label} 환율 입력 {new Date(timestamp).toLocaleString('ko-KR')}
+      {stale ? ' · 24시간이 지난 환율입니다.' : ''}
+    </small>
   );
 }

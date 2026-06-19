@@ -57,6 +57,8 @@ export type DatedRule = {
   sourceUrl: string;
   lastVerifiedAt: string;
   rate?: number;
+  brandFeeRate?: number;
+  serviceFeeRate?: number;
   fixedFeeUsd?: number;
   cashbackCapKrw?: number;
   baseMilesPer1000Krw?: number;

@@ -33,6 +33,7 @@ describe('comparison engine', () => {
     expect(result.fixedFeesKrw).toBe(700);
     expect(result.cashbackKrw).toBe(1800);
     expect(result.effectiveCostKrw).toBe(89_800);
+    expect(result.assumptions).toContain('국제브랜드 수수료 1%, 해외서비스 수수료 USD 0.5');
   });
 
   it('changes the Toss versus Travel Wallet order around the fixed-fee boundary', () => {
@@ -66,6 +67,7 @@ describe('comparison engine', () => {
       naverCashbackRemainingKrw: 50_000,
     }, 'naver-pay-qr');
     expect(result.cashbackKrw).toBe(10_000);
+    expect(result.assumptions.some((item) => item.includes('공식 최대 10,000원'))).toBe(true);
   });
 
   it.each([
@@ -90,6 +92,7 @@ describe('comparison engine', () => {
       'shinhan-air-1.5',
     );
     expect(result.earnedMiles).toBe(1850);
+    expect(result.assumptions).toContain('기본 1.5마일은 월 한도 없음, 추가 1.5마일은 월 2,000마일 한도');
   });
 
   it('continues uncapped base mileage after the additional cap is exhausted', () => {

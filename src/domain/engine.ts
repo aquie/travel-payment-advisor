@@ -4,6 +4,14 @@ import type { ComparisonResult, MethodBreakdown, QuoteInput } from './types';
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const MILE_VALUES = new Set([10, 15, 20]);
 
+function percent(rate: number): string {
+  return `${rate * 100}%`;
+}
+
+function formattedNumber(value: number): string {
+  return new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 2 }).format(value);
+}
+
 function assertFinite(name: string, value: number, allowZero = true): void {
   if (!Number.isFinite(value) || value < 0 || (!allowZero && value === 0)) {
     throw new RangeError(`${name} 값이 올바르지 않습니다.`);
@@ -106,8 +114,8 @@ function calculateToss(input: QuoteInput): MethodBreakdown {
     mileageValueKrw: 0,
     assumptions: [
       '토스뱅크 외화통장이 해외 결제계좌로 연결됨',
-      `국제브랜드 수수료 1%, 해외서비스 수수료 USD 0.50`,
-      `공식 확인 기간의 해외 캐시백 ${cashback.rate * 100}% 적용`,
+      `국제브랜드 수수료 ${percent(PAYMENT_RULES.toss.fees.rate)}, 해외서비스 수수료 USD ${formattedNumber(PAYMENT_RULES.toss.fees.fixedFeeUsd)}`,
+      `공식 확인 기간의 해외 캐시백 ${percent(cashback.rate)} 적용`,
     ],
     warnings: [
       '실제 캐시백은 USD 거래금액과 승인·매입 시점 전신환매도율을 사용한 근삿값입니다.',
@@ -148,7 +156,7 @@ function calculateNaver(input: QuoteInput): MethodBreakdown {
       input.naverKrwPer100Jpy === undefined
         ? '전용 환율 미입력으로 공통 환율 사용'
         : '사용자가 입력한 Naver Pay 전용 환율 사용',
-      '이벤트 신청 후 결제분의 10%를 입력한 잔여 한도까지만 적용',
+      `이벤트 신청 후 결제분의 ${percent(cashbackRule.rate)}를 입력한 잔여 한도와 공식 최대 ${formattedNumber(cashbackRule.cashbackCapKrw)}원 중 작은 금액까지 적용`,
     ],
     warnings,
   });
@@ -176,10 +184,12 @@ function calculateShinhan(input: QuoteInput): MethodBreakdown {
   }
 
   const earnedMiles = baseMiles + additionalMiles;
+  const feeRule = PAYMENT_RULES.shinhan.fees;
+  const mileageRule = PAYMENT_RULES.shinhan.mileage;
   return completeBreakdown({
     methodId: 'shinhan-air-1.5',
     convertedKrw,
-    percentageFeesKrw: convertedKrw * PAYMENT_RULES.shinhan.fees.rate,
+    percentageFeesKrw: convertedKrw * (feeRule.brandFeeRate + feeRule.serviceFeeRate),
     fixedFeesKrw: 0,
     cashbackKrw: 0,
     earnedMiles,
@@ -188,8 +198,8 @@ function calculateShinhan(input: QuoteInput): MethodBreakdown {
       input.shinhanKrwPer100Jpy === undefined
         ? '전용 환율 미입력으로 공통 환율 사용'
         : '사용자가 입력한 신한 전용 환율 사용',
-      'Mastercard 1%와 신한 해외서비스 수수료 0.18% 적용',
-      '기본 1.5마일은 월 한도 없음, 추가 1.5마일은 월 2,000마일 한도',
+      `Mastercard ${percent(feeRule.brandFeeRate)}와 신한 해외서비스 수수료 ${percent(feeRule.serviceFeeRate)} 적용`,
+      `기본 ${formattedNumber(mileageRule.baseMilesPer1000Krw)}마일은 월 한도 없음, 추가 ${formattedNumber(mileageRule.additionalMilesPer1000Krw)}마일은 월 ${formattedNumber(mileageRule.additionalMilesCap)}마일 한도`,
     ],
     warnings: [
       ...(input.shinhanPreviousMonthEligible

@@ -102,7 +102,8 @@ export const PAYMENT_RULES = {
       sourceUrl:
         'https://www.shinhancard.com/pconts/html/card/apply/credit/1228373_2207.html',
       lastVerifiedAt: '2026-06-19',
-      rate: 0.0118,
+      brandFeeRate: 0.01,
+      serviceFeeRate: 0.0018,
     },
   },
 } as const satisfies Record<string, Record<string, DatedRule>>;

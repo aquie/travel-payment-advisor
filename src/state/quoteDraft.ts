@@ -45,13 +45,15 @@ function optionalNumber(value: string): number | undefined {
 }
 
 export function draftToInput(draft: QuoteDraft): QuoteInput {
+  const naverRate = optionalNumber(draft.naverKrwPer100Jpy);
+  const shinhanRate = optionalNumber(draft.shinhanKrwPer100Jpy);
   return {
     quoteDate: draft.quoteDate,
     purchaseAmountJpy: Number(draft.purchaseAmountJpy),
     commonKrwPer100Jpy: Number(draft.commonKrwPer100Jpy),
     usdKrw: Number(draft.usdKrw),
-    naverKrwPer100Jpy: optionalNumber(draft.naverKrwPer100Jpy),
-    shinhanKrwPer100Jpy: optionalNumber(draft.shinhanKrwPer100Jpy),
+    naverKrwPer100Jpy: naverRate,
+    shinhanKrwPer100Jpy: shinhanRate,
     naverEventApplied: draft.naverEventApplied,
     naverCashbackRemainingKrw: Number(draft.naverCashbackRemainingKrw),
     shinhanPreviousMonthEligible: draft.shinhanPreviousMonthEligible,
@@ -60,8 +62,8 @@ export function draftToInput(draft: QuoteDraft): QuoteInput {
     rateTimestamps: {
       commonKrwPer100Jpy: draft.rateUpdatedAt,
       usdKrw: draft.usdRateUpdatedAt,
-      naverKrwPer100Jpy: draft.naverRateUpdatedAt,
-      shinhanKrwPer100Jpy: draft.shinhanRateUpdatedAt,
+      naverKrwPer100Jpy: naverRate === undefined ? undefined : draft.naverRateUpdatedAt,
+      shinhanKrwPer100Jpy: shinhanRate === undefined ? undefined : draft.shinhanRateUpdatedAt,
     },
   };
 }
