@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Travel Payment Advisor MVP 계획 세션 영수증</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, Pretendard, system-ui, sans-serif; color: #17211b; background: #eef3ee; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px 16px; }
+    main { width: min(920px, 100%); margin: auto; background: #fff; border: 1px solid #d8e1da; border-radius: 20px; box-shadow: 0 16px 42px rgba(29, 54, 37, .09); overflow: hidden; }
+    header { padding: 32px; background: linear-gradient(135deg, #173d2a, #286343); color: #fff; }
+    header p { margin: 8px 0 0; color: #d9ebdf; }
+    section { padding: 24px 32px; border-top: 1px solid #e4eae5; }
+    h1, h2 { margin: 0; }
+    h1 { font-size: clamp(1.65rem, 4vw, 2.3rem); }
+    h2 { margin-bottom: 16px; font-size: 1.05rem; }
+    .status { display: inline-block; margin-bottom: 14px; padding: 5px 10px; border-radius: 999px; background: #dff7e7; color: #17552f; font-weight: 700; font-size: .82rem; }
+    .meta, .metrics { display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); }
+    .card { padding: 16px; border: 1px solid #dfe7e1; border-radius: 14px; background: #f9fbf9; }
+    .card strong { display: block; font-size: 1.45rem; color: #1d5a39; }
+    .card span, small { color: #667269; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { padding: 11px 8px; text-align: left; border-bottom: 1px solid #e5eae6; vertical-align: top; }
+    th { color: #526057; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    ol, ul { margin: 0; padding-left: 20px; }
+    li + li { margin-top: 8px; }
+    code { padding: 2px 5px; border-radius: 5px; background: #edf2ee; font-size: .88em; }
+    footer { padding: 18px 32px 26px; color: #748077; font-size: .82rem; }
+    @media (max-width: 700px) { .meta, .metrics { grid-template-columns: repeat(2, 1fr); } header, section { padding: 24px 20px; } table { display: block; overflow-x: auto; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="status">완료 · 계획 전용</span>
+      <h1>Travel Payment Advisor MVP</h1>
+      <p>구현 세션에 전달할 의사결정 완료형 계획 문서</p>
+    </header>
+
+    <section class="meta" aria-label="세션 정보">
+      <div class="card"><span>완료 시각</span><strong>16:59</strong><small>2026-06-19 KST</small></div>
+      <div class="card"><span>작업 모드</span><strong>Medium</strong><small>구현·코드 변경 없음</small></div>
+      <div class="card"><span>기록 구간</span><strong>약 1분</strong><small>문서 생성·커밋 기준</small></div>
+      <div class="card"><span>최종 커밋</span><strong>3개</strong><small>계획·보고서·영수증</small></div>
+    </section>
+
+    <section>
+      <h2>핵심 지표</h2>
+      <div class="metrics">
+        <div class="card"><strong>4</strong><span>비교 결제수단</span></div>
+        <div class="card"><strong>219</strong><span>계획서 줄 수</span></div>
+        <div class="card"><strong>18</strong><span>명시된 테스트 시나리오</span></div>
+        <div class="card"><strong>0</strong><span>구현 파일 변경</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>산출물</h2>
+      <table>
+        <thead><tr><th>문서</th><th>이전</th><th>이후</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td><code>plan.md</code></td><td>없음</td><td>219줄</td><td>확정</td></tr>
+          <tr><td><code>completion_report.md</code></td><td>없음</td><td>65줄</td><td>완료</td></tr>
+          <tr><td><code>receipt.html</code></td><td>없음</td><td>신규</td><td>완료</td></tr>
+          <tr><td>애플리케이션 코드</td><td>없음</td><td>없음</td><td>계획대로 미구현</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>단계 타임라인</h2>
+      <ol>
+        <li>제품 컨텍스트, Git 상태, 공식 조건과 전역 <code>code-team</code> 스킬 확인</li>
+        <li>환율 입력, 혜택 한도, 근소한 차이, 7일 기록 정책 확정</li>
+        <li>의사결정 완료형 MVP 계획서 작성 및 커밋</li>
+        <li>계획 대비 실제와 미확정 사항을 완료보고서로 기록</li>
+        <li>사람이 빠르게 검토할 수 있는 세션 영수증 생성</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>주요 결정</h2>
+      <ul>
+        <li>Vite + React + TypeScript 정적 PWA와 순수 계산 엔진을 채택한다.</li>
+        <li>환율은 수동 입력하고 검증되지 않은 상품별 API 환율은 사용하지 않는다.</li>
+        <li>혜택 한도는 러프하게 입력하며 최근 추천 결과만 7일 보관한다.</li>
+        <li>결과 차이가 1% 이내면 편의성과 가맹점 수용성을 우선하도록 안내한다.</li>
+        <li>날짜 의존 규칙은 출처·유효기간·확인일과 함께 데이터로 관리한다.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>마찰 및 후속 작업</h2>
+      <ul>
+        <li>일부 공식 페이지가 동적 렌더링되어 접근 가능한 공식 안내와 검색 결과를 대조했다.</li>
+        <li>기존 영수증 템플릿이 없어 이번 문서를 독립 HTML로 작성했다.</li>
+        <li>다음 구현 세션에서는 <code>code-team</code>을 명시적으로 호출하고 공식 조건을 다시 확인한다.</li>
+      </ul>
+    </section>
+
+    <footer>이 영수증의 소요 시간은 저장소 문서 생성·커밋 구간만 측정하며 앞선 요구사항 협의 시간은 포함하지 않는다.</footer>
+  </main>
+</body>
+</html>
