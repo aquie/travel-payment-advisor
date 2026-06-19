@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "verify:pwa": "node scripts/verify-pwa.mjs",
     "generate:pwa-assets": "pwa-assets-generator -p minimal -r public -m false app-icon.svg",
     "preview": "vite preview",
     "test": "vitest run",
