@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Strong Review Receipt — Travel Payment Advisor</title>
+  <style>
+    :root { color-scheme: light; font-family: Inter, Pretendard, system-ui, sans-serif; color: #12203a; background: #f4f7fb; }
+    body { margin: 0; padding: 32px 18px; }
+    main { max-width: 980px; margin: auto; padding: 34px; background: white; border: 1px solid #dce3ee; border-radius: 18px; box-shadow: 0 16px 48px #19345d14; }
+    h1 { margin: 0 0 8px; font-size: 2rem; }
+    h2 { margin-top: 34px; padding-bottom: 8px; border-bottom: 1px solid #dce3ee; font-size: 1.05rem; }
+    p, li, td, th { font-size: .9rem; line-height: 1.55; }
+    .status { display: inline-block; margin-top: 8px; padding: 7px 11px; border-radius: 999px; color: #07543f; background: #e7f8f1; font-weight: 800; }
+    .meta, .metrics { display: grid; gap: 12px; }
+    .meta { grid-template-columns: repeat(2, 1fr); margin-top: 24px; }
+    .metrics { grid-template-columns: repeat(4, 1fr); margin-top: 20px; }
+    .card { padding: 16px; border: 1px solid #dce3ee; border-radius: 12px; background: #fbfcfe; }
+    .card span { display: block; color: #65718a; font-size: .74rem; }
+    .card strong { display: block; margin-top: 5px; font-size: 1.35rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #e5eaf2; text-align: left; vertical-align: top; }
+    th { color: #65718a; font-size: .75rem; text-transform: uppercase; }
+    ol { padding-left: 22px; }
+    code { padding: 2px 5px; border-radius: 5px; background: #eef3fa; }
+    .note { padding: 14px 16px; border-left: 4px solid #f0a43c; background: #fff8ec; }
+    @media (max-width: 700px) { main { padding: 24px 18px; } .metrics, .meta { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Travel Payment Advisor Strong Review</h1>
+  <p>review-only 다중 에이전트 검토, 수정, QA 및 최종 평가 영수증</p>
+  <span class="status">APPROVED · main 미병합</span>
+
+  <section class="meta">
+    <div class="card"><span>기간</span><strong>2026-06-19~20</strong><span>Asia/Seoul</span></div>
+    <div class="card"><span>경과</span><strong>약 2시간 40분</strong><span>중간 사용 한도 대기 포함</span></div>
+    <div class="card"><span>브랜치</span><strong style="font-size:.92rem">codex/2026_06_19-travel-payment-advisor-mvp</strong></div>
+    <div class="card"><span>최종 평가</span><strong>Attempt 3</strong><span>APPROVE</span></div>
+  </section>
+
+  <section class="metrics">
+    <div class="card"><span>테스트</span><strong>46/46</strong></div>
+    <div class="card"><span>해소된 지적</span><strong>15</strong></div>
+    <div class="card"><span>모바일 너비</span><strong>3</strong><span>320·375·390px</span></div>
+    <div class="card"><span>검토 커밋</span><strong>12</strong><span>receipt 포함</span></div>
+  </section>
+
+  <h2>검증 결과</h2>
+  <table>
+    <thead><tr><th>항목</th><th>이전</th><th>최종</th></tr></thead>
+    <tbody>
+      <tr><td>단위/UI 테스트</td><td>31 tests</td><td>46 tests PASS</td></tr>
+      <tr><td>계산·날짜·한도</td><td>상한·날짜·오버플로 누락</td><td>규칙 데이터 및 경계 검증</td></tr>
+      <tr><td>로컬 저장</td><td>얕은 문서 검증</td><td>중첩 검증·접근 실패 복구</td></tr>
+      <tr><td>모바일 UI</td><td>safe area·320px overflow</td><td>3개 너비 PASS</td></tr>
+      <tr><td>PWA</td><td>build 성공만 검증</td><td>artifact 계약 + 실제 오프라인 reload·계산</td></tr>
+      <tr><td>배포 보안</td><td>workflow 전역 쓰기 권한</td><td>job별 최소 권한</td></tr>
+    </tbody>
+  </table>
+
+  <h2>단계 타임라인</h2>
+  <ol>
+    <li>문맥·계획·완료보고서·git log·main diff 복원</li>
+    <li>계획/구조, 계산, 보안, PWA, UI, 독립 eval 병렬 검토</li>
+    <li>Round 1 지적 수정 및 개별 테스트·커밋</li>
+    <li>Round 2 재검토, 환율 증거·설명 이중 관리 해소</li>
+    <li>실제 모바일 브라우저 QA에서 320px overflow 발견·수정</li>
+    <li>production 서버 중단 후 오프라인 재실행·재계산 검증</li>
+    <li>QA 보고서, eval 로그, 완료보고서, receipt 작성</li>
+  </ol>
+
+  <h2>주요 결정</h2>
+  <ul>
+    <li>기존 확정 계획은 수정하거나 재작성하지 않았다.</li>
+    <li>요율·한도·수수료와 사용자 설명을 동일 규칙 데이터에서 생성한다.</li>
+    <li>사용하지 않는 전용 환율의 시각은 결과 스냅샷에서 제외한다.</li>
+    <li>실패한 localStorage는 앱 계산을 중단시키지 않는다.</li>
+    <li>main 병합, push, PR, 실제 배포는 수행하지 않는다.</li>
+  </ul>
+
+  <h2>마찰 지점</h2>
+  <p class="note">중간에 Git 쓰기 승인이 사용 한도로 중단되어 다음 세션에서 같은 작업트리와 커밋 이력으로 복원했다. 또한 검색 색인에 남은 신한 URL이 실제로는 404여서 접근 가능한 공식 페이지로 교체했다.</p>
+
+  <h2>후속 확인</h2>
+  <ul>
+    <li>실제 iPhone Safari 홈 화면 설치·방향 전환</li>
+    <li>VoiceOver 발화 순서</li>
+    <li>배포 당일 공식 프로모션 기간·조건 재확인</li>
+  </ul>
+</main>
+</body>
+</html>
