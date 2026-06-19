@@ -100,7 +100,7 @@ export const PAYMENT_RULES = {
       label: 'Mastercard 1% + 신한 해외서비스 0.18%',
       methodId: 'shinhan-air-1.5',
       sourceUrl:
-        'https://www.shinhancard.com/pconts/html/helpdesk/totalService/MOBFM12552/MOBFM12552H/MOBFM12552R10.html',
+        'https://www.shinhancard.com/pconts/html/card/apply/credit/1228373_2207.html',
       lastVerifiedAt: '2026-06-19',
       rate: 0.0118,
     },
