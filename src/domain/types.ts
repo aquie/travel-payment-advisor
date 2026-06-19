@@ -48,4 +48,10 @@ export type DatedRule = {
   validThrough?: string;
   sourceUrl: string;
   lastVerifiedAt: string;
+  rate?: number;
+  fixedFeeUsd?: number;
+  cashbackCapKrw?: number;
+  baseMilesPer1000Krw?: number;
+  additionalMilesPer1000Krw?: number;
+  additionalMilesCap?: number;
 };

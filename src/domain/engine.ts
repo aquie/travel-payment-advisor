@@ -11,7 +11,12 @@ function assertFinite(name: string, value: number, allowZero = true): void {
 }
 
 export function validateQuoteInput(input: QuoteInput): void {
-  if (!DATE_PATTERN.test(input.quoteDate) || Number.isNaN(Date.parse(`${input.quoteDate}T00:00:00Z`))) {
+  const [year, month, day] = input.quoteDate.split('-').map(Number);
+  const parsedDate = new Date(Date.UTC(year, month - 1, day));
+  if (!DATE_PATTERN.test(input.quoteDate) ||
+    parsedDate.getUTCFullYear() !== year ||
+    parsedDate.getUTCMonth() !== month - 1 ||
+    parsedDate.getUTCDate() !== day) {
     throw new RangeError('결제 예정일 형식이 올바르지 않습니다.');
   }
 
@@ -39,7 +44,7 @@ function converted(amountJpy: number, ratePer100Jpy: number): number {
 function completeBreakdown(
   breakdown: Omit<MethodBreakdown, 'effectiveCostKrw'>,
 ): MethodBreakdown {
-  return {
+  const completed = {
     ...breakdown,
     effectiveCostKrw:
       breakdown.convertedKrw +
@@ -48,6 +53,12 @@ function completeBreakdown(
       breakdown.cashbackKrw -
       breakdown.mileageValueKrw,
   };
+  for (const [name, value] of Object.entries(completed)) {
+    if (typeof value === 'number' && !Number.isFinite(value)) {
+      throw new RangeError(`${name} 계산 결과가 너무 큽니다.`);
+    }
+  }
+  return completed;
 }
 
 function calculateTravelWallet(input: QuoteInput): MethodBreakdown {
@@ -66,10 +77,10 @@ function calculateTravelWallet(input: QuoteInput): MethodBreakdown {
 
 function tossCashbackRate(input: QuoteInput): { rate: number; warning?: string } {
   if (isRuleActive(PAYMENT_RULES.toss.japanCashback, input.quoteDate)) {
-    return { rate: 0.03 };
+    return { rate: PAYMENT_RULES.toss.japanCashback.rate };
   }
   if (isRuleActive(PAYMENT_RULES.toss.overseasCashback, input.quoteDate)) {
-    return { rate: 0.02 };
+    return { rate: PAYMENT_RULES.toss.overseasCashback.rate };
   }
   return {
     rate: 0,
@@ -83,8 +94,8 @@ function calculateToss(input: QuoteInput): MethodBreakdown {
   return completeBreakdown({
     methodId: 'toss-bank',
     convertedKrw,
-    percentageFeesKrw: convertedKrw * 0.01,
-    fixedFeesKrw: input.usdKrw * 0.5,
+    percentageFeesKrw: convertedKrw * PAYMENT_RULES.toss.fees.rate,
+    fixedFeesKrw: input.usdKrw * PAYMENT_RULES.toss.fees.fixedFeeUsd,
     cashbackKrw: convertedKrw * cashback.rate,
     earnedMiles: 0,
     mileageValueKrw: 0,
@@ -106,8 +117,9 @@ function calculateNaver(input: QuoteInput): MethodBreakdown {
     input.naverKrwPer100Jpy ?? input.commonKrwPer100Jpy,
   );
   const eventActive = isRuleActive(PAYMENT_RULES.naver.cashback, input.quoteDate);
+  const cashbackRule = PAYMENT_RULES.naver.cashback;
   const cashback = input.naverEventApplied && eventActive
-    ? Math.min(convertedKrw * 0.1, input.naverCashbackRemainingKrw)
+    ? Math.min(convertedKrw * cashbackRule.rate, input.naverCashbackRemainingKrw, cashbackRule.cashbackCapKrw)
     : 0;
   const warnings: string[] = [
     '네트워크·중개 수수료를 별도 추정하지 않았습니다. 확인한 예상 환율을 전용 환율에 입력하세요.',
@@ -146,19 +158,23 @@ function calculateShinhan(input: QuoteInput): MethodBreakdown {
   let additionalMiles = 0;
 
   if (input.shinhanPreviousMonthEligible) {
-    baseMiles = (convertedKrw / 1000) * 1.5;
+    const mileageRule = PAYMENT_RULES.shinhan.mileage;
+    baseMiles = (convertedKrw / 1000) * mileageRule.baseMilesPer1000Krw;
     const usedAdditionalMiles = Math.min(
-      2000,
-      (input.shinhanOverseasSpendThisMonthKrw / 1000) * 1.5,
+      mileageRule.additionalMilesCap,
+      (input.shinhanOverseasSpendThisMonthKrw / 1000) * mileageRule.additionalMilesPer1000Krw,
     );
-    additionalMiles = Math.min((convertedKrw / 1000) * 1.5, 2000 - usedAdditionalMiles);
+    additionalMiles = Math.min(
+      (convertedKrw / 1000) * mileageRule.additionalMilesPer1000Krw,
+      mileageRule.additionalMilesCap - usedAdditionalMiles,
+    );
   }
 
   const earnedMiles = baseMiles + additionalMiles;
   return completeBreakdown({
     methodId: 'shinhan-air-1.5',
     convertedKrw,
-    percentageFeesKrw: convertedKrw * 0.0118,
+    percentageFeesKrw: convertedKrw * PAYMENT_RULES.shinhan.fees.rate,
     fixedFeesKrw: 0,
     cashbackKrw: 0,
     earnedMiles,

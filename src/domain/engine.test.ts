@@ -59,6 +59,25 @@ describe('comparison engine', () => {
     expect(method({ ...baseInput, naverCashbackRemainingKrw: 0 }, 'naver-pay-qr').cashbackKrw).toBe(0);
   });
 
+  it('never exceeds the official 10,000 KRW Naver cashback cap', () => {
+    const result = method({
+      ...baseInput,
+      purchaseAmountJpy: 100_000,
+      naverCashbackRemainingKrw: 50_000,
+    }, 'naver-pay-qr');
+    expect(result.cashbackKrw).toBe(10_000);
+  });
+
+  it.each([
+    ['2026-06-30', 0.03],
+    ['2026-07-01', 0.02],
+    ['2026-09-30', 0.02],
+    ['2026-10-01', 0],
+  ] as const)('applies Toss cashback at the %s boundary', (quoteDate, rate) => {
+    const result = method({ ...baseInput, quoteDate }, 'toss-bank');
+    expect(result.cashbackKrw).toBe(result.convertedKrw * rate);
+  });
+
   it('sets Shinhan mileage value to zero without previous-month eligibility', () => {
     const result = method({ ...baseInput, shinhanPreviousMonthEligible: false }, 'shinhan-air-1.5');
     expect(result.earnedMiles).toBe(0);
@@ -117,6 +136,18 @@ describe('comparison engine', () => {
     ['naverCashbackRemainingKrw', -1],
   ] as const)('rejects invalid %s values', (key, value) => {
     expect(() => validateQuoteInput({ ...baseInput, [key]: value })).toThrow(RangeError);
+  });
+
+  it.each(['2026-02-29', '2026-02-30', '2026-04-31'])('rejects impossible date %s', (quoteDate) => {
+    expect(() => validateQuoteInput({ ...baseInput, quoteDate })).toThrow(RangeError);
+  });
+
+  it('rejects finite inputs whose calculated amounts overflow', () => {
+    expect(() => comparePaymentMethods({
+      ...baseInput,
+      purchaseAmountJpy: 1e308,
+      commonKrwPer100Jpy: 1e308,
+    })).toThrow(/너무 큽니다/);
   });
 
   it('uses deterministic method order when all effective and cash costs tie', () => {

@@ -29,6 +29,7 @@ export const PAYMENT_RULES = {
       methodId: 'travel-wallet',
       sourceUrl: 'https://www.travel-wallet.com/ko/docs/travelpay_terms',
       lastVerifiedAt: '2026-06-19',
+      rate: 0,
     },
   },
   toss: {
@@ -40,6 +41,7 @@ export const PAYMENT_RULES = {
       validThrough: '2026-06-30',
       sourceUrl: 'https://www.tossbank.com/card/japan-cashback',
       lastVerifiedAt: '2026-06-19',
+      rate: 0.03,
     },
     overseasCashback: {
       id: 'toss-overseas-cashback-2',
@@ -49,6 +51,7 @@ export const PAYMENT_RULES = {
       validThrough: '2026-09-30',
       sourceUrl: 'https://www.tossbank.com/card/benefits',
       lastVerifiedAt: '2026-06-19',
+      rate: 0.02,
     },
     fees: {
       id: 'toss-overseas-fees',
@@ -56,6 +59,8 @@ export const PAYMENT_RULES = {
       methodId: 'toss-bank',
       sourceUrl: 'https://www.tossbank.com/card/benefits',
       lastVerifiedAt: '2026-06-19',
+      rate: 0.01,
+      fixedFeeUsd: 0.5,
     },
   },
   naver: {
@@ -67,6 +72,8 @@ export const PAYMENT_RULES = {
       validThrough: '2026-12-31',
       sourceUrl: 'https://campaign2.naver.com/global10save3/',
       lastVerifiedAt: '2026-06-19',
+      rate: 0.1,
+      cashbackCapKrw: 10_000,
     },
     exchangeGuide: {
       id: 'naver-overseas-qr-exchange-guide',
@@ -84,6 +91,9 @@ export const PAYMENT_RULES = {
       sourceUrl:
         'https://www.shinhancard.com/pconts/html/card/apply/credit/1188278_2207.html',
       lastVerifiedAt: '2026-06-19',
+      baseMilesPer1000Krw: 1.5,
+      additionalMilesPer1000Krw: 1.5,
+      additionalMilesCap: 2_000,
     },
     fees: {
       id: 'shinhan-mastercard-overseas-fees',
@@ -92,6 +102,7 @@ export const PAYMENT_RULES = {
       sourceUrl:
         'https://www.shinhancard.com/pconts/html/helpdesk/totalService/MOBFM12552/MOBFM12552A/MOBFM12552R05.html',
       lastVerifiedAt: '2026-06-19',
+      rate: 0.0118,
     },
   },
 } as const satisfies Record<string, Record<string, DatedRule>>;
