@@ -3,67 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Travel Payment Advisor MVP 계획 세션 영수증</title>
+  <title>Travel Payment Advisor MVP 구현 영수증</title>
   <style>
-    :root { color-scheme: light; font-family: Inter, Pretendard, system-ui, sans-serif; color: #17211b; background: #eef3ee; }
+    :root { color-scheme: light; font-family: Pretendard, Inter, system-ui, sans-serif; color: #0d1b36; background: #edf3ff; }
     * { box-sizing: border-box; }
     body { margin: 0; padding: 32px 16px; }
-    main { width: min(920px, 100%); margin: auto; background: #fff; border: 1px solid #d8e1da; border-radius: 20px; box-shadow: 0 16px 42px rgba(29, 54, 37, .09); overflow: hidden; }
-    header { padding: 32px; background: linear-gradient(135deg, #173d2a, #286343); color: #fff; }
-    header p { margin: 8px 0 0; color: #d9ebdf; }
-    section { padding: 24px 32px; border-top: 1px solid #e4eae5; }
-    h1, h2 { margin: 0; }
-    h1 { font-size: clamp(1.65rem, 4vw, 2.3rem); }
-    h2 { margin-bottom: 16px; font-size: 1.05rem; }
-    .status { display: inline-block; margin-bottom: 14px; padding: 5px 10px; border-radius: 999px; background: #dff7e7; color: #17552f; font-weight: 700; font-size: .82rem; }
-    .meta, .metrics { display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); }
-    .card { padding: 16px; border: 1px solid #dfe7e1; border-radius: 14px; background: #f9fbf9; }
-    .card strong { display: block; font-size: 1.45rem; color: #1d5a39; }
-    .card span, small { color: #667269; }
-    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
-    th, td { padding: 11px 8px; text-align: left; border-bottom: 1px solid #e5eae6; vertical-align: top; }
-    th { color: #526057; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    main { width: min(960px, 100%); margin: auto; overflow: hidden; border: 1px solid #dbe3f1; border-radius: 20px; background: #fff; box-shadow: 0 18px 50px rgb(25 59 118 / 10%); }
+    header { padding: 34px; color: #fff; background: #125cf5; }
+    header p { margin: 8px 0 0; color: #e7efff; }
+    section { padding: 25px 34px; border-top: 1px solid #e5e9f0; }
+    h1, h2 { margin: 0; letter-spacing: -.035em; }
+    h1 { font-size: clamp(1.7rem, 4vw, 2.45rem); }
+    h2 { margin-bottom: 16px; font-size: 1.06rem; }
+    .status { display: inline-block; margin-bottom: 14px; padding: 5px 10px; border-radius: 999px; color: #0742b7; background: #fff; font-size: .8rem; font-weight: 800; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .card { padding: 16px; border: 1px solid #dfe5ef; border-radius: 12px; background: #f8faff; }
+    .card strong { display: block; color: #125cf5; font-size: 1.45rem; font-variant-numeric: tabular-nums; }
+    .card span, small { color: #65718a; }
+    table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    th, td { padding: 11px 8px; border-bottom: 1px solid #e5e9f0; text-align: left; vertical-align: top; }
+    th { color: #65718a; font-size: .77rem; text-transform: uppercase; letter-spacing: .04em; }
     ol, ul { margin: 0; padding-left: 20px; }
     li + li { margin-top: 8px; }
-    code { padding: 2px 5px; border-radius: 5px; background: #edf2ee; font-size: .88em; }
-    footer { padding: 18px 32px 26px; color: #748077; font-size: .82rem; }
-    @media (max-width: 700px) { .meta, .metrics { grid-template-columns: repeat(2, 1fr); } header, section { padding: 24px 20px; } table { display: block; overflow-x: auto; } }
+    code { padding: 2px 5px; border-radius: 5px; background: #eef3fb; font-size: .88em; }
+    .pass { color: #08795e; font-weight: 800; }
+    footer { padding: 19px 34px 27px; color: #748098; font-size: .8rem; }
+    @media (max-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } header, section { padding: 24px 20px; } table { display: block; overflow-x: auto; } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <span class="status">완료 · 계획 전용</span>
+      <span class="status">구현 완료 · Strong Mode 검토 대기</span>
       <h1>Travel Payment Advisor MVP</h1>
-      <p>구현 세션에 전달할 의사결정 완료형 계획 문서</p>
+      <p>모바일 우선 일본 결제수단 비교 PWA 구현 세션</p>
     </header>
 
-    <section class="meta" aria-label="세션 정보">
-      <div class="card"><span>완료 시각</span><strong>16:59</strong><small>2026-06-19 KST</small></div>
-      <div class="card"><span>작업 모드</span><strong>Medium</strong><small>구현·코드 변경 없음</small></div>
-      <div class="card"><span>기록 구간</span><strong>약 1분</strong><small>문서 생성·커밋 기준</small></div>
-      <div class="card"><span>최종 커밋</span><strong>3개</strong><small>계획·보고서·영수증</small></div>
+    <section class="grid" aria-label="세션 정보">
+      <div class="card"><span>완료 시각</span><strong>20:23</strong><small>2026-06-19 KST</small></div>
+      <div class="card"><span>작업 모드</span><strong>Medium</strong><small>단일 에이전트</small></div>
+      <div class="card"><span>진행 시간</span><strong>2회차</strong><small>승인 한도 중단 후 재개</small></div>
+      <div class="card"><span>총 커밋</span><strong>8</strong><small>설계부터 영수증까지</small></div>
     </section>
 
     <section>
       <h2>핵심 지표</h2>
-      <div class="metrics">
+      <div class="grid">
         <div class="card"><strong>4</strong><span>비교 결제수단</span></div>
-        <div class="card"><strong>219</strong><span>계획서 줄 수</span></div>
-        <div class="card"><strong>18</strong><span>명시된 테스트 시나리오</span></div>
-        <div class="card"><strong>0</strong><span>구현 파일 변경</span></div>
+        <div class="card"><strong>31</strong><span>통과한 자동 테스트</span></div>
+        <div class="card"><strong>3</strong><span>모바일 검증 너비</span></div>
+        <div class="card"><strong>12</strong><span>PWA precache 항목</span></div>
       </div>
     </section>
 
     <section>
-      <h2>산출물</h2>
+      <h2>주요 산출물</h2>
       <table>
-        <thead><tr><th>문서</th><th>이전</th><th>이후</th><th>상태</th></tr></thead>
+        <thead><tr><th>영역</th><th>이전</th><th>이후</th><th>상태</th></tr></thead>
         <tbody>
-          <tr><td><code>plan.md</code></td><td>없음</td><td>219줄</td><td>확정</td></tr>
-          <tr><td><code>completion_report.md</code></td><td>없음</td><td>65줄</td><td>완료</td></tr>
-          <tr><td><code>receipt.html</code></td><td>없음</td><td>신규</td><td>완료</td></tr>
-          <tr><td>애플리케이션 코드</td><td>없음</td><td>없음</td><td>계획대로 미구현</td></tr>
+          <tr><td>애플리케이션</td><td>없음</td><td>React + TypeScript PWA</td><td class="pass">완료</td></tr>
+          <tr><td>계산 엔진</td><td>계획만 존재</td><td>209줄 + 21개 엔진 테스트</td><td class="pass">완료</td></tr>
+          <tr><td>로컬 저장</td><td>계획만 존재</td><td>버전형 문서 + 7일 기록</td><td class="pass">완료</td></tr>
+          <tr><td>배포</td><td>없음</td><td>GitHub Pages workflow</td><td>push 전 검토 대기</td></tr>
+          <tr><td>완료보고서</td><td>없음</td><td>91줄</td><td class="pass">완료</td></tr>
         </tbody>
       </table>
     </section>
@@ -71,35 +73,50 @@
     <section>
       <h2>단계 타임라인</h2>
       <ol>
-        <li>제품 컨텍스트, Git 상태, 공식 조건과 전역 <code>code-team</code> 스킬 확인</li>
-        <li>환율 입력, 혜택 한도, 근소한 차이, 7일 기록 정책 확정</li>
-        <li>의사결정 완료형 MVP 계획서 작성 및 커밋</li>
-        <li>계획 대비 실제와 미확정 사항을 완료보고서로 기록</li>
-        <li>사람이 빠르게 검토할 수 있는 세션 영수증 생성</li>
+        <li>확정 계획·Git 상태 복원 및 <code>codex/2026_06_19-travel-payment-advisor-mvp</code> 브랜치 생성</li>
+        <li>공식 조건 재확인과 모바일 UI 기준 확정</li>
+        <li>React·TypeScript·Vitest·PWA 스캐폴드 구축</li>
+        <li>날짜 제한 규칙, 비교 엔진, 단위 테스트 구현</li>
+        <li>입력·추천·상세 UI와 로컬 저장·데이터 관리 구현</li>
+        <li>모바일·오프라인·콘솔·상호작용 QA 및 발견 문제 수정</li>
+        <li>공식 자료 최종 재확인, 완료보고서와 영수증 작성</li>
       </ol>
     </section>
 
     <section>
       <h2>주요 결정</h2>
       <ul>
-        <li>Vite + React + TypeScript 정적 PWA와 순수 계산 엔진을 채택한다.</li>
-        <li>환율은 수동 입력하고 검증되지 않은 상품별 API 환율은 사용하지 않는다.</li>
-        <li>혜택 한도는 러프하게 입력하며 최근 추천 결과만 7일 보관한다.</li>
-        <li>결과 차이가 1% 이내면 편의성과 가맹점 수용성을 우선하도록 안내한다.</li>
-        <li>날짜 의존 규칙은 출처·유효기간·확인일과 함께 데이터로 관리한다.</li>
+        <li>실제 환율처럼 보이는 기본값이나 확인되지 않은 환율 API를 사용하지 않는다.</li>
+        <li>Toss 2%는 현재 공식 확인된 2026-09-30까지만 자동 적용한다.</li>
+        <li>혜택 규칙은 유효기간·출처·마지막 확인일을 가진 데이터로 관리한다.</li>
+        <li>사용자 입력과 최근 결과는 서버 전송 없이 기기 안에만 저장한다.</li>
+        <li>main 병합·push·PR 없이 구현 브랜치에서 Strong Mode 검토를 기다린다.</li>
       </ul>
     </section>
 
     <section>
-      <h2>마찰 및 후속 작업</h2>
+      <h2>마찰과 해결</h2>
       <ul>
-        <li>일부 공식 페이지가 동적 렌더링되어 접근 가능한 공식 안내와 검색 결과를 대조했다.</li>
-        <li>기존 영수증 템플릿이 없어 이번 문서를 독립 HTML로 작성했다.</li>
-        <li>다음 구현 세션에서는 <code>code-team</code>을 명시적으로 호출하고 공식 조건을 다시 확인한다.</li>
+        <li>Git 승인 한도 중단: 변경을 보존한 뒤 사용자 승인 후 같은 브랜치에서 재개했다.</li>
+        <li>빠른 입력 상태 경합: 브라우저 재현 후 함수형 React 상태 업데이트로 수정했다.</li>
+        <li>초기화 확인 UI 잔류: 초기화 시 확인 상태도 함께 닫도록 수정했다.</li>
+        <li>신한 공식 URL 변경: 현재 공식 카드·해외이용 안내 URL로 교체했다.</li>
+        <li>Tab 키 자동 주입 제한: 의미 구조를 점검하고 실제 Safari 키보드 검증을 후속 작업으로 남겼다.</li>
       </ul>
     </section>
 
-    <footer>이 영수증의 소요 시간은 저장소 문서 생성·커밋 구간만 측정하며 앞선 요구사항 협의 시간은 포함하지 않는다.</footer>
+    <section>
+      <h2>검증과 후속 작업</h2>
+      <ul>
+        <li><span class="pass">PASS</span> 31개 테스트, 프로덕션 빌드, diff whitespace 검사</li>
+        <li><span class="pass">PASS</span> 320·375·390px 무가로 스크롤, 콘솔 오류 없음</li>
+        <li><span class="pass">PASS</span> 서버 중단 후 앱·입력 복원, 오프라인 재계산·상세 펼침</li>
+        <li>Strong Mode에서 iOS Safari 설치·VoiceOver·실제 키보드 포커스를 확인한다.</li>
+        <li>승인 전에는 main 병합, push, PR, Pages 배포를 수행하지 않는다.</li>
+      </ul>
+    </section>
+
+    <footer>이 영수증은 구현 브랜치의 커밋·테스트·브라우저 QA 결과를 사람이 빠르게 복원할 수 있도록 요약한다.</footer>
   </main>
 </body>
 </html>
